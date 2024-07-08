@@ -4,7 +4,7 @@ import axios from "axios";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useHistory, Link } from "react-router-dom";
-import { ModalPage } from '../Modal/Modal';
+import { ModalPage } from "../Modal/Modal";
 
 const SignInCont = styled.div`
   background: url(${"https://www.glassdoor.com/app/static/img/home/heroLaptop.jpg?v=674d79pgbp"});
@@ -83,91 +83,100 @@ const SignInCont = styled.div`
     align-items: center;
     justify-content: center;
   }
-`
+`;
 
 export function SignInFormSection() {
   const [loginData, setLoginData] = useState({});
   const history = useHistory();
   const [modalStatus, setModalStatus] = useState({
     isOpen: false,
-    messege: ""
+    messege: "",
   });
 
   const handleHideModal = () => {
     setTimeout(() => {
       setModalStatus({ ...modalStatus, isOpen: false, messege: "" });
-    }, 3000)
-  }
+    }, 3000);
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
 
-    setLoginData({ ...loginData, [name]: value })
-  }
+    setLoginData({ ...loginData, [name]: value });
+  };
 
   const postData = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     axios
-      .get(`https://glassdoor-clone-server.herokuapp.com/glassdoorUsers?email=${loginData.email}`)
+      .get(
+        `https://glassdoor-clone-server.herokuapp.com/glassdoorUsers?email=${loginData.email}`
+      )
       .then(({ data }) => {
         if (data.length) {
-          setModalStatus({ ...modalStatus, isOpen: true, messege: `User with ${loginData.email} already registered` });
+          setModalStatus({
+            ...modalStatus,
+            isOpen: true,
+            messege: `User with ${loginData.email} already registered`,
+          });
           handleHideModal();
           // alert("email already registered")
-          return
+          return;
         } else {
           axios
-            .post("https://glassdoor-clone-server.herokuapp.com/glassdoorUsers", loginData)
+            .post(
+              "https://glassdoor-clone-server.herokuapp.com/glassdoorUsers",
+              loginData
+            )
             .then((res) => {
-              setIsRegistered("block")
-              setIsInvalid("none")
-              setLoginData({ email: "", password: "" })
-              console.log(res)
+              setIsRegistered("block");
+              setIsInvalid("none");
+              setLoginData({ email: "", password: "" });
+              console.log(res);
             })
             .catch((err) => {
-              console.log(err)
-            })
+              console.log(err);
+            });
         }
       })
       .catch((err) => {
-        console.log("err:", err)
-      })
+        console.log("err:", err);
+      });
     if (loginData.email === undefined || loginData.password === undefined) {
-      setIsInvalid("block")
-      return
+      setIsInvalid("block");
+      return;
     }
-  }
+  };
 
   const handleLogin = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    history.push("/Dashboard");
+    // if (loginData.email === undefined || loginData.password === undefined) {
+    //   setIsInvalid("block")
+    //   return
+    // }
 
-    if (loginData.email === undefined || loginData.password === undefined) {
-      setIsInvalid("block")
-      return
-    }
-
-    axios
-      .get(`https://glassdoor-clone-server.herokuapp.com/glassdoorUsers?email=${loginData.email}`)
-      .then((res) => {
-        if (res.data.length !== 0) {
-          if (res.data[0].password !== loginData.password) {
-            setIsRegistered("none")
-            setIsInvalid("block")
-          } else {
-            history.push("/Dashboard")
-          }
-        } else {
-          setIsRegistered("none")
-          setIsInvalid("block")
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
-  const [isRegistered, setIsRegistered] = useState("none")
-  const [isInValid, setIsInvalid] = useState("none")
-  const [isSigningIn, setIsSigningIn] = useState(true)
+    // axios
+    //   .get(`https://glassdoor-clone-server.herokuapp.com/glassdoorUsers?email=${loginData.email}`)
+    //   .then((res) => {
+    //     if (res.data.length !== 0) {
+    //       if (res.data[0].password !== loginData.password) {
+    //         setIsRegistered("none")
+    //         setIsInvalid("block")
+    //       } else {
+    //         history.push("/Dashboard")
+    //       }
+    //     } else {
+    //       setIsRegistered("none")
+    //       setIsInvalid("block")
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err)
+    //   })
+  };
+  const [isRegistered, setIsRegistered] = useState("none");
+  const [isInValid, setIsInvalid] = useState("none");
+  const [isSigningIn, setIsSigningIn] = useState(true);
 
   return (
     <>
@@ -254,5 +263,5 @@ export function SignInFormSection() {
         </div>
       </SignInCont>
     </>
-  )
+  );
 }
